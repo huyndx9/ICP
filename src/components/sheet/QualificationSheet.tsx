@@ -1,15 +1,16 @@
-import { Fragment, useEffect, useState } from 'react';
-import { Copy, Trash2 } from 'lucide-react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Copy, Maximize, Trash2 } from 'lucide-react';
 import { EditableCell } from './EditableCell';
+import { RowDetailPanel } from './RowDetailPanel';
 import { SheetToolbar } from './SheetToolbar';
 import type { SheetFilters } from './SheetToolbar';
-import { COLUMNS, COLUMN_GROUPS, ROW_NUMBER_WIDTH } from '../../data/columns';
+import { COLUMNS, groupColumns, ROW_NUMBER_WIDTH } from '../../data/columns';
 import { STAGE_BY_KEY } from '../../data/workflow';
 import { CONFIDENCE_STYLE } from '../../data/options';
 import type { ICPRow } from '../../types';
 
 const GROUP_ROW_HEIGHT = 34;
-const ACTIONS_WIDTH = 84;
+const ACTIONS_WIDTH = 112;
 
 /** Left offset of the second frozen column (Project) = row-number width. */
 const PROJECT_LEFT = ROW_NUMBER_WIDTH;
@@ -28,6 +29,8 @@ type QualificationSheetProps = {
   onDeleteRow: (id: string) => void;
   onExport: () => void;
   onReset: () => void;
+  hiddenColumns: (keyof ICPRow)[];
+  onHiddenColumnsChange: (hidden: (keyof ICPRow)[]) => void;
 };
 
 export function QualificationSheet({
@@ -41,22 +44,46 @@ export function QualificationSheet({
   onDeleteRow,
   onExport,
   onReset,
+  hiddenColumns,
+  onHiddenColumnsChange,
 }: QualificationSheetProps) {
-  const projectColumn = COLUMNS[0];
-  const scrollingColumns = COLUMNS.slice(1);
-  // Full screen gives the 20 columns the whole viewport instead of the page's
+  // Full screen gives the columns the whole viewport instead of the page's
   // remaining strip, so far fewer of them sit behind a scrollbar.
   const [fullscreen, setFullscreen] = useState(false);
+  // The row whose every field is open in the side panel, by id: an id survives
+  // a filter change, where a row position would point at a different account.
+  const [detailRowId, setDetailRowId] = useState<string | null>(null);
+
+  const visibleColumns = useMemo(() => {
+    const hidden = new Set(hiddenColumns);
+    return COLUMNS.filter((column) => !hidden.has(column.key));
+  }, [hiddenColumns]);
+
+  const projectColumn = visibleColumns[0];
+  const scrollingColumns = visibleColumns.slice(1);
+  const bands = useMemo(() => groupColumns(visibleColumns), [visibleColumns]);
+
+  const detailIndex = rows.findIndex((row) => row.id === detailRowId);
+  const detailRow = detailIndex === -1 ? null : rows[detailIndex];
+
+  // A filter or a delete can drop the row the panel is showing.
+  useEffect(() => {
+    if (detailRowId && detailIndex === -1) setDetailRowId(null);
+  }, [detailRowId, detailIndex]);
 
   useEffect(() => {
-    if (!fullscreen) return;
+    const overlayOpen = fullscreen || detailRow !== null;
+    if (!overlayOpen) return;
 
+    // Escape closes the innermost layer first: the panel, then full screen.
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setFullscreen(false);
+      if (event.key !== 'Escape') return;
+      if (detailRow) setDetailRowId(null);
+      else setFullscreen(false);
     };
     document.addEventListener('keydown', onKeyDown);
 
-    // Stop the page behind the overlay from scrolling along with the sheet.
+    // Stop the page behind the overlay from scrolling along with it.
     const { overflow } = document.body.style;
     document.body.style.overflow = 'hidden';
 
@@ -64,7 +91,7 @@ export function QualificationSheet({
       document.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = overflow;
     };
-  }, [fullscreen]);
+  }, [fullscreen, detailRow]);
 
   return (
     <div
@@ -84,6 +111,8 @@ export function QualificationSheet({
         onReset={onReset}
         fullscreen={fullscreen}
         onToggleFullscreen={() => setFullscreen((current) => !current)}
+        hiddenColumns={hiddenColumns}
+        onHiddenColumnsChange={onHiddenColumnsChange}
       />
 
       <div
@@ -99,7 +128,7 @@ export function QualificationSheet({
                 className="sticky left-0 top-0 z-40 border-b border-r border-black/[.06] bg-white"
                 style={{ width: ROW_NUMBER_WIDTH, minWidth: ROW_NUMBER_WIDTH, height: GROUP_ROW_HEIGHT }}
               />
-              {COLUMN_GROUPS.map((band, bandIndex) => {
+              {bands.map((band, bandIndex) => {
                 const stage = STAGE_BY_KEY[band.group];
                 // Band A opens with the frozen Project column, so its label rides
                 // along in that frozen cell and stays readable while scrolling.
@@ -248,6 +277,14 @@ export function QualificationSheet({
                   >
                     <div className="flex items-center justify-center gap-1 opacity-40 transition group-hover:opacity-100">
                       <button
+                        onClick={() => setDetailRowId(row.id)}
+                        title="Open all fields for this row"
+                        aria-label={`Open all fields, row ${index + 1}`}
+                        className="rounded-lg p-1.5 text-ink/60 transition hover:bg-black/[.06] hover:text-flowA"
+                      >
+                        <Maximize className="h-3.5 w-3.5" />
+                      </button>
+                      <button
                         onClick={() => onDuplicateRow(row.id)}
                         title="Duplicate row"
                         className="rounded-lg p-1.5 text-ink/60 transition hover:bg-black/[.06] hover:text-flowA"
@@ -270,7 +307,7 @@ export function QualificationSheet({
             {rows.length === 0 && (
               <tr>
                 <td
-                  colSpan={COLUMNS.length + 2}
+                  colSpan={visibleColumns.length + 2}
                   className="px-6 py-14 text-center text-[12px] text-ink/35"
                 >
                   No rows match the current filters.
@@ -280,6 +317,15 @@ export function QualificationSheet({
           </tbody>
         </table>
       </div>
+
+      {detailRow && (
+        <RowDetailPanel
+          row={detailRow}
+          index={detailIndex}
+          onUpdateCell={onUpdateCell}
+          onClose={() => setDetailRowId(null)}
+        />
+      )}
     </div>
   );
 }

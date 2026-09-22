@@ -1,5 +1,7 @@
 import { Download, Filter, Maximize2, Minimize2, Plus, RotateCcw } from 'lucide-react';
+import { ColumnPicker } from './ColumnPicker';
 import { CONFIDENCE_LEVELS, MARKETS, TIERS } from '../../data/options';
+import type { ICPRow } from '../../types';
 
 export type SheetFilters = {
   market: string;
@@ -17,6 +19,8 @@ type SheetToolbarProps = {
   onReset: () => void;
   fullscreen: boolean;
   onToggleFullscreen: () => void;
+  hiddenColumns: (keyof ICPRow)[];
+  onHiddenColumnsChange: (hidden: (keyof ICPRow)[]) => void;
 };
 
 function FilterSelect({
@@ -63,6 +67,8 @@ export function SheetToolbar({
   onReset,
   fullscreen,
   onToggleFullscreen,
+  hiddenColumns,
+  onHiddenColumnsChange,
 }: SheetToolbarProps) {
   const set = (patch: Partial<SheetFilters>) => onFiltersChange({ ...filters, ...patch });
 
@@ -97,6 +103,7 @@ export function SheetToolbar({
       </span>
 
       <div className="ml-auto flex items-center gap-2">
+        <ColumnPicker hidden={hiddenColumns} onHiddenChange={onHiddenColumnsChange} />
         <button
           onClick={onToggleFullscreen}
           className="ios-pill bg-black/[.04] text-ink/70 hover:bg-black/[.07]"

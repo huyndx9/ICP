@@ -11,6 +11,7 @@ import { usePersistentState } from './lib/storage';
 import type { ICPRow, TabKey } from './types';
 
 const STORAGE_KEY = 'icp-bd-working-kit/rows';
+const HIDDEN_COLUMNS_KEY = 'icp-bd-working-kit/hidden-columns';
 
 const EMPTY_FILTERS: SheetFilters = { market: 'All', tier: 'All', confidence: 'All' };
 
@@ -44,6 +45,10 @@ function blankRow(index: number): ICPRow {
 
 export default function App() {
   const [rows, setRows] = usePersistentState<ICPRow[]>(STORAGE_KEY, DEMO_ROWS);
+  const [hiddenColumns, setHiddenColumns] = usePersistentState<(keyof ICPRow)[]>(
+    HIDDEN_COLUMNS_KEY,
+    [],
+  );
   const [tab, setTab] = useState<TabKey>('dashboard');
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<SheetFilters>(EMPTY_FILTERS);
@@ -126,6 +131,8 @@ export default function App() {
             onDeleteRow={deleteRow}
             onExport={() => downloadCsv(visibleRows)}
             onReset={resetRows}
+            hiddenColumns={hiddenColumns}
+            onHiddenColumnsChange={setHiddenColumns}
           />
         )}
 

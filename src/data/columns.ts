@@ -41,15 +41,25 @@ export const COLUMNS: readonly ColumnDef[] = [
 export const ROW_NUMBER_WIDTH = 56;
 export const FROZEN_COLUMN_COUNT = 1;
 
-/** Columns grouped into contiguous header bands (A→F), preserving sheet order. */
-export const COLUMN_GROUPS = COLUMNS.reduce<{ group: ColumnDef['group']; columns: ColumnDef[] }[]>(
-  (bands, column) => {
+export type ColumnBand = { group: ColumnDef['group']; columns: ColumnDef[] };
+
+/**
+ * Groups columns into contiguous header bands (A→F), preserving sheet order.
+ * Takes the columns to group so a hidden column drops out of its band too.
+ */
+export function groupColumns(columns: readonly ColumnDef[]): ColumnBand[] {
+  return columns.reduce<ColumnBand[]>((bands, column) => {
     const last = bands[bands.length - 1];
     if (last && last.group === column.group) {
       last.columns.push(column);
       return bands;
     }
     return [...bands, { group: column.group, columns: [column] }];
-  },
-  [],
-);
+  }, []);
+}
+
+/** Every band, for the column picker and for an unfiltered sheet. */
+export const COLUMN_GROUPS = groupColumns(COLUMNS);
+
+/** The identity column: frozen beside the row number, so it can never be hidden. */
+export const LOCKED_COLUMN = COLUMNS[0].key;
