@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Copy, Trash2 } from 'lucide-react';
 import { EditableCell } from './EditableCell';
 import { SheetToolbar } from './SheetToolbar';
@@ -44,9 +44,36 @@ export function QualificationSheet({
 }: QualificationSheetProps) {
   const projectColumn = COLUMNS[0];
   const scrollingColumns = COLUMNS.slice(1);
+  // Full screen gives the 20 columns the whole viewport instead of the page's
+  // remaining strip, so far fewer of them sit behind a scrollbar.
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (!fullscreen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setFullscreen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+
+    // Stop the page behind the overlay from scrolling along with the sheet.
+    const { overflow } = document.body.style;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = overflow;
+    };
+  }, [fullscreen]);
 
   return (
-    <div className="ios-card animate-fade-up overflow-hidden p-0">
+    <div
+      className={
+        fullscreen
+          ? 'fixed inset-0 z-[60] flex flex-col overflow-hidden bg-white p-0'
+          : 'ios-card animate-fade-up overflow-hidden p-0'
+      }
+    >
       <SheetToolbar
         filters={filters}
         onFiltersChange={onFiltersChange}
@@ -55,9 +82,15 @@ export function QualificationSheet({
         onAddRow={onAddRow}
         onExport={onExport}
         onReset={onReset}
+        fullscreen={fullscreen}
+        onToggleFullscreen={() => setFullscreen((current) => !current)}
       />
 
-      <div className="ios-scroll max-h-[calc(100vh-320px)] overflow-auto">
+      <div
+        className={`ios-scroll overflow-auto ${
+          fullscreen ? 'flex-1' : 'max-h-[calc(100vh-320px)]'
+        }`}
+      >
         <table className="w-max border-separate border-spacing-0 text-[12px]">
           <thead>
             {/* Band row: the A→F workflow stage each column belongs to. */}

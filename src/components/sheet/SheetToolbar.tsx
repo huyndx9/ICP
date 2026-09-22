@@ -1,4 +1,4 @@
-import { Download, Filter, Plus, RotateCcw } from 'lucide-react';
+import { Download, Filter, Maximize2, Minimize2, Plus, RotateCcw } from 'lucide-react';
 import { CONFIDENCE_LEVELS, MARKETS, TIERS } from '../../data/options';
 
 export type SheetFilters = {
@@ -15,6 +15,8 @@ type SheetToolbarProps = {
   onAddRow: () => void;
   onExport: () => void;
   onReset: () => void;
+  fullscreen: boolean;
+  onToggleFullscreen: () => void;
 };
 
 function FilterSelect({
@@ -59,6 +61,8 @@ export function SheetToolbar({
   onAddRow,
   onExport,
   onReset,
+  fullscreen,
+  onToggleFullscreen,
 }: SheetToolbarProps) {
   const set = (patch: Partial<SheetFilters>) => onFiltersChange({ ...filters, ...patch });
 
@@ -93,6 +97,14 @@ export function SheetToolbar({
       </span>
 
       <div className="ml-auto flex items-center gap-2">
+        <button
+          onClick={onToggleFullscreen}
+          className="ios-pill bg-black/[.04] text-ink/70 hover:bg-black/[.07]"
+          title={fullscreen ? 'Exit full screen (Esc)' : 'View the sheet full screen'}
+        >
+          {fullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          {fullscreen ? 'Exit full screen' : 'Full screen'}
+        </button>
         <button
           onClick={onReset}
           className="ios-pill bg-black/[.04] text-ink/60 hover:bg-black/[.07]"
