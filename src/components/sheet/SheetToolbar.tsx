@@ -1,10 +1,9 @@
 import { Download, Filter, Maximize2, Minimize2, Plus, RotateCcw } from 'lucide-react';
 import { ColumnPicker } from './ColumnPicker';
-import { CONFIDENCE_LEVELS, MARKETS, TIERS } from '../../data/options';
+import { CONFIDENCE_LEVELS, TIERS } from '../../data/options';
 import type { ICPRow } from '../../types';
 
 export type SheetFilters = {
-  market: string;
   tier: string;
   confidence: string;
 };
@@ -79,12 +78,6 @@ export function SheetToolbar({
         Filters
       </span>
 
-      <FilterSelect
-        label="Market"
-        value={filters.market}
-        options={MARKETS}
-        onChange={(market) => set({ market })}
-      />
       <FilterSelect
         label="Tier"
         value={filters.tier}

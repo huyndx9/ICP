@@ -36,7 +36,6 @@ export function RecentAccounts({ rows, onOpenSheet }: RecentAccountsProps) {
             <thead>
               <tr className="text-left text-[11px] font-semibold uppercase tracking-wide text-ink/40">
                 <th className="pb-2 pr-3 font-semibold">Company</th>
-                <th className="pb-2 pr-3 font-semibold">Market</th>
                 <th className="pb-2 pr-3 font-semibold">Tier</th>
                 <th className="pb-2 pr-3 font-semibold">Match</th>
                 <th className="pb-2 pr-3 font-semibold">Confidence</th>
@@ -52,9 +51,6 @@ export function RecentAccounts({ rows, onOpenSheet }: RecentAccountsProps) {
                       {row.project}
                       {row.industry ? ` · ${row.industry}` : ''}
                     </p>
-                  </td>
-                  <td className="border-t border-black/[.05] py-2.5 pr-3 text-ink/70">
-                    {row.market}
                   </td>
                   <td className="border-t border-black/[.05] py-2.5 pr-3">
                     <Badge label={row.tier} {...TIER_STYLE[row.tier]} />

@@ -18,7 +18,6 @@ export type LeadershipDecision =
 export type ICPRow = {
   id: string;
   project: string;
-  market: string;
   targetDomain: string;
   icpModel: string;
   tier: Tier;

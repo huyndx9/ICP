@@ -13,7 +13,7 @@ import type { ICPRow, TabKey } from './types';
 const STORAGE_KEY = 'icp-bd-working-kit/rows';
 const HIDDEN_COLUMNS_KEY = 'icp-bd-working-kit/hidden-columns';
 
-const EMPTY_FILTERS: SheetFilters = { market: 'All', tier: 'All', confidence: 'All' };
+const EMPTY_FILTERS: SheetFilters = { tier: 'All', confidence: 'All' };
 
 const createId = () => `row-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -21,7 +21,6 @@ function blankRow(index: number): ICPRow {
   return {
     id: createId(),
     project: `Project ${String.fromCharCode(65 + (index % 26))}`,
-    market: 'SEA',
     targetDomain: '',
     icpModel: 'Traditional Extension',
     tier: 'Tier 2',
@@ -65,7 +64,6 @@ export default function App() {
     () =>
       searched.filter(
         (row) =>
-          (filters.market === 'All' || row.market === filters.market) &&
           (filters.tier === 'All' || row.tier === filters.tier) &&
           (filters.confidence === 'All' || row.confidence === filters.confidence),
       ),

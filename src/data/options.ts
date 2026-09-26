@@ -1,7 +1,5 @@
 import type { ConfidenceLevel, LeadershipDecision, MatchWithStrategy, StrategicIntent, Tier } from '../types';
 
-export const MARKETS = ['SEA', 'SG', 'JP', 'US', 'EU', 'AU', 'KR', 'VN'] as const;
-
 export const TIERS: readonly Tier[] = ['Tier 1', 'Tier 2', 'Tier 3'];
 
 export const ICP_MODELS = [

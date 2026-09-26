@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import { Card } from '../ui/Card';
 import { CONFIDENCE_COLOR, INTENT_COLOR, TIER_COLOR } from '../../data/options';
-import { countByConfidence, countByIntent, countByMarket, countByTier } from '../../lib/metrics';
+import { countByConfidence, countByIndustry, countByIntent, countByTier } from '../../lib/metrics';
 import type { ConfidenceLevel, ICPRow, StrategicIntent, Tier } from '../../types';
 
 const AXIS = { fontSize: 11, fill: '#0A193180' } as const;
@@ -65,11 +65,11 @@ export function TierDonut({ rows }: { rows: ICPRow[] }) {
   );
 }
 
-export function MarketBars({ rows }: { rows: ICPRow[] }) {
-  const data = countByMarket(rows);
+export function IndustryBars({ rows }: { rows: ICPRow[] }) {
+  const data = countByIndustry(rows);
 
   return (
-    <Card title="Market Distribution" subtitle="Accounts per market">
+    <Card title="Industry Distribution" subtitle="Accounts per industry">
       {data.length === 0 ? (
         <EmptyState />
       ) : (

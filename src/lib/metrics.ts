@@ -35,11 +35,11 @@ export function countByTier(rows: ICPRow[]) {
   }));
 }
 
-export function countByMarket(rows: ICPRow[]) {
+export function countByIndustry(rows: ICPRow[]) {
   const counts = new Map<string, number>();
   rows.forEach((row) => {
-    const market = row.market || '—';
-    counts.set(market, (counts.get(market) ?? 0) + 1);
+    const industry = row.industry || '—';
+    counts.set(industry, (counts.get(industry) ?? 0) + 1);
   });
   return [...counts.entries()]
     .map(([name, value]) => ({ name, value }))

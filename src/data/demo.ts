@@ -5,7 +5,6 @@ export const DEMO_ROWS: ICPRow[] = [
   {
     id: 'seed-1',
     project: 'Project A',
-    market: 'SG',
     targetDomain: 'Logistics',
     icpModel: 'Traditional Extension',
     tier: 'Tier 1',
@@ -28,7 +27,6 @@ export const DEMO_ROWS: ICPRow[] = [
   {
     id: 'seed-2',
     project: 'Project B',
-    market: 'JP',
     targetDomain: 'Manufacturing',
     icpModel: 'Traditional Extension',
     tier: 'Tier 2',
@@ -51,7 +49,6 @@ export const DEMO_ROWS: ICPRow[] = [
   {
     id: 'seed-3',
     project: 'Project C',
-    market: 'US',
     targetDomain: 'Banking',
     icpModel: 'Traditional Extension',
     tier: 'Tier 1',
@@ -74,7 +71,6 @@ export const DEMO_ROWS: ICPRow[] = [
   {
     id: 'seed-4',
     project: 'Project D',
-    market: 'AU',
     targetDomain: 'Healthcare',
     icpModel: 'Traditional Extension',
     tier: 'Tier 2',

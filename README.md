@@ -26,15 +26,15 @@ npm run typecheck
 
 | Tab | Nội dung |
 | --- | --- |
-| **Dashboard** | 4 KPI (Total Accounts, Tier 1, Avg Confidence L1–L5, Match Rate) + 4 biểu đồ Recharts (Tier donut, Market bar, Confidence bar, Strategic Intent pie) + bảng Recent Accounts. |
-| **Qualification Sheet** | Lưới thay Excel: 20 cột, sửa trực tiếp trên ô, filter Market/Tier/Confidence, search, export CSV, thêm/nhân bản/xoá dòng. |
+| **Dashboard** | 4 KPI (Total Accounts, Tier 1, Avg Confidence L1–L5, Match Rate) + 4 biểu đồ Recharts (Tier donut, Industry bar, Confidence bar, Strategic Intent pie) + bảng Recent Accounts. |
+| **Qualification Sheet** | Lưới thay Excel: 19 cột, sửa trực tiếp trên ô, chọn ẩn/hiện cột, xem full màn hình, panel chi tiết từng dòng, filter Tier/Confidence, search, export CSV, thêm/nhân bản/xoá dòng. |
 | **GTM Framework** | 5 nhóm buying scenario (Growth, Transformation, Technology, Risk & Compliance, Commercial), concept flow và trạng thái hypothesis. |
 | **Library** | Bảng tham chiếu cho Confidence Level, Strategic Intent, Expected Offering, Tier, Leadership Decision + rule of thumb. |
 
 ## Qualification Sheet
 
 - **Sửa tại chỗ**: click vào ô text để sửa (`Enter` lưu, `Esc` huỷ); các cột có
-  danh sách chuẩn (Market, Tier, Confidence, Intent, Match, Decision…) dùng
+  danh sách chuẩn (Tier, Confidence, Intent, Match, Decision…) dùng
   `<select>`.
 - **Đóng băng cột**: cột `No` và `Project` luôn hiển thị khi cuộn ngang, đúng
   kiểu freeze pane của Excel.
@@ -43,8 +43,13 @@ npm run typecheck
   F `#1A2B6B`) và nhãn nhóm bám trái khi cuộn.
 - **Badge màu**: Confidence L1→L5 đi từ đỏ sang xanh đậm; Tier, Match và
   Decision cũng có màu riêng.
-- **Export CSV**: xuất đúng các dòng đang hiển thị sau filter/search, có BOM để
-  Excel mở không lỗi font.
+- **Full screen**: đưa sheet ra toàn màn hình (`Esc` hoặc bấm lại để thoát).
+- **Columns**: chọn ẩn/hiện từng cột hoặc cả nhóm A→F; lựa chọn được lưu lại.
+  Cột `Project` bị khoá vì là cột định danh đang đóng băng.
+- **Panel chi tiết**: icon mở rộng ở mỗi dòng hiện đủ các trường theo chiều dọc,
+  sửa được ngay tại đó, kể cả cột đang ẩn ngoài lưới.
+- **Export CSV**: xuất đúng các dòng đang hiển thị sau filter/search, kèm mọi cột
+  kể cả cột đang ẩn, có BOM để Excel mở không lỗi font.
 - **Reset**: khôi phục 4 dòng demo.
 
 ## Dữ liệu
@@ -60,7 +65,7 @@ src/
   App.tsx                    # state dòng dữ liệu, filter, search, điều hướng tab
   types.ts                   # ICPRow và các kiểu dùng chung
   data/
-    columns.ts               # 20 cột của sheet + cách gom nhóm A→F
+    columns.ts               # 19 cột của sheet + cách gom nhóm A→F
     demo.ts                  # 4 dòng demo
     gtm.ts                   # dữ liệu tab GTM Framework
     options.ts               # danh sách giá trị chuẩn + bảng màu badge

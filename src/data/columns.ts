@@ -6,7 +6,6 @@ import {
   EMPLOYEE_BANDS,
   EXPECTED_OFFERINGS,
   ICP_MODELS,
-  MARKETS,
   MATCHES,
   REVENUE_BANDS,
   STRATEGIC_INTENTS,
@@ -16,7 +15,6 @@ import {
 /** Sheet layout, in Excel order. `group` drives the colored sticky header band. */
 export const COLUMNS: readonly ColumnDef[] = [
   { key: 'project', label: 'Project', group: 'A', width: 168 },
-  { key: 'market', label: 'Market', group: 'A', width: 104, options: MARKETS },
   { key: 'targetDomain', label: 'Target Domain', group: 'A', width: 150 },
   { key: 'icpModel', label: 'ICP Model', group: 'A', width: 176, options: ICP_MODELS },
   { key: 'tier', label: 'Tier', group: 'A', width: 104, options: TIERS },
